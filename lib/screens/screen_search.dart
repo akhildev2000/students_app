@@ -42,8 +42,8 @@ class MySearch extends SearchDelegate {
         : Provider.of<DbFunction>(context)
             .studentList
             .where((element) => element.name
-                .toLowerCase()
-                .startsWith(query.toLowerCase().toString()))
+                .toUpperCase()
+                .startsWith(query.toLowerCase().toString().trim()))
             .toList();
 
     return listItems.isEmpty
@@ -52,29 +52,31 @@ class MySearch extends SearchDelegate {
             itemCount: listItems.length,
             itemBuilder: (context, index) {
               return Padding(
-                  padding: const EdgeInsets.only(left: 15.00, right: 15.00),
-                  child: Column(
-                    children: [
-                      ListTile(
-                        leading: const CircleAvatar(
-                          backgroundImage:
-                              AssetImage('assets/profilepicnotext.png'),
-                        ),
-                        title: Text(listItems[index].name),
-                        // subtitle:
-                        //     Text("Age : ${(listItems[index].age.toString())}"),
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (ctx) =>
-                                  AddStudent(data: listItems[index])));
-                        },
+                padding: const EdgeInsets.only(left: 15.00, right: 15.00),
+                child: Column(
+                  children: [
+                    ListTile(
+                      leading: const CircleAvatar(
+                        backgroundImage:
+                            AssetImage('assets/profilepicnotext.png'),
                       ),
-                      const Divider(
-                        thickness: 3,
-                        color: Colors.grey,
-                      ),
-                    ],
-                  ));
-            });
+                      title: Text(listItems[index].name),
+                      // subtitle:
+                      //     Text("Age : ${(listItems[index].age.toString())}"),
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (ctx) =>
+                                AddStudent(data: listItems[index])));
+                      },
+                    ),
+                    const Divider(
+                      thickness: 3,
+                      color: Colors.grey,
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
   }
 }

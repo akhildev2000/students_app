@@ -13,6 +13,7 @@ class ListOfStudents extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<DbFunction>(context).getAllStudents();
     return Scaffold(
       backgroundColor: bgcolor,
       body: Container(
@@ -36,71 +37,73 @@ class ListOfStudents extends StatelessWidget {
                   hintText: 'Search'),
             ),
             Expanded(
-              child: Consumer<DbFunction>(builder: (context, value, _) {
-                return ListView.separated(
-                    itemBuilder: (ctx, index) {
-                      // final data = value[index];
-                      return ListTile(
-                        leading: const CircleAvatar(
-                          backgroundColor: Colors.white,
-                          backgroundImage:
-                              AssetImage('assets/profilepicnotext.png'),
-                          radius: 25,
-                        ),
-                        title: Text(value.studentList[index].name),
-                        subtitle: Text(value.studentList[index].domain),
-                        trailing: IconButton(
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                backgroundColor: bgcolor,
-                                title: const Text('Are you Sure?'),
-                                content: const Text(
-                                    'Your are going to delete a student'),
-                                actions: [
-                                  Consumer<DbFunction>(
-                                    builder: (context, value, child) {
-                                      return TextButton(
+              child: Consumer<DbFunction>(
+                builder: (context, value, _) {
+                  return ListView.separated(
+                      itemBuilder: (ctx, index) {
+                        // final data = value[index];
+                        return ListTile(
+                          leading: const CircleAvatar(
+                            backgroundColor: Colors.white,
+                            backgroundImage:
+                                AssetImage('assets/profilepicnotext.png'),
+                            radius: 25,
+                          ),
+                          title: Text(value.studentList[index].name),
+                          subtitle: Text(value.studentList[index].domain),
+                          trailing: IconButton(
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  backgroundColor: bgcolor,
+                                  title: const Text('Are you Sure?'),
+                                  content: const Text(
+                                      'Your are going to delete a student'),
+                                  actions: [
+                                    Consumer<DbFunction>(
+                                      builder: (context, value, child) {
+                                        return TextButton(
+                                          onPressed: () {
+                                            // deleteStudent(index);
+                                            value.deleteStudent(index);
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text('Yes'),
+                                        );
+                                      },
+                                    ),
+                                    TextButton(
                                         onPressed: () {
-                                          // deleteStudent(index);
-                                          value.deleteStudent(index);
                                           Navigator.pop(context);
                                         },
-                                        child: const Text('Yes'),
-                                      );
-                                    },
-                                  ),
-                                  TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: const Text('No')),
-                                ],
-                              ),
+                                        child: const Text('No')),
+                                  ],
+                                ),
+                              );
+                            },
+                            icon: const Icon(
+                              Icons.delete_rounded,
+                              color: Colors.red,
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(builder: (ctx) {
+                                return AddStudent(
+                                  data: value.studentList[index],
+                                );
+                              }),
                             );
                           },
-                          icon: const Icon(
-                            Icons.delete_rounded,
-                            color: Colors.red,
-                          ),
-                        ),
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(builder: (ctx) {
-                              return AddStudent(
-                                data: value.studentList[index],
-                              );
-                            }),
-                          );
-                        },
-                      );
-                    },
-                    separatorBuilder: (ctx, index) {
-                      return const Divider();
-                    },
-                    itemCount: value.studentList.length);
-              }),
+                        );
+                      },
+                      separatorBuilder: (ctx, index) {
+                        return const Divider();
+                      },
+                      itemCount: value.studentList.length);
+                },
+              ),
             ),
           ],
         ),
